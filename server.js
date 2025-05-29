@@ -1,14 +1,9 @@
-import express from 'express';
-import path from 'path';
-import fetch from 'node-fetch';
-import { fileURLToPath } from 'url';
+const express = require('express');
+const fetch = require('node-fetch');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// 兼容 ES Module 路径
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // 提供静态前端页面
 app.use(express.static(path.join(__dirname, 'public')));
