@@ -1,0 +1,15 @@
+{
+    "name": "morse-led-project",
+    "version": "1.0.0",
+    "description": "通过网页将英文转换为摩斯电码并控制 LED",
+    "main": "server.js",
+    "type": "module",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2",
+      "node-fetch": "^3.3.2"
+    }
+  }
+  
