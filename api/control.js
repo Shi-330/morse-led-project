@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 // 注意：这里需要替换为你的开发板实际IP和端口
 const BOARD_IP = "192.168.42.1";
 const BOARD_PORT = "8080";
