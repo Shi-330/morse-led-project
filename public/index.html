@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>摩斯电码LED控制</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            padding: 12px;
+            font-size: 16px;
+            margin: 10px;
+            width: 80%;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>摩斯电码LED控制</h1>
+    <input type="text" id="textInput" placeholder="输入英文句子（小写字母）" maxlength="30">
+    <button onclick="sendMorse()">发送摩斯电码</button>
+    
+    <script>
+        // 摩斯电码映射表
+        const morseMap = {
+            'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.',
+            'f': '..-.', 'g': '--.', 'h': '....', 'i': '..', 'j': '.---',
+            'k': '-.-', 'l': '.-..', 'm': '--', 'n': '-.', 'o': '---',
+            'p': '.--.', 'q': '--.-', 'r': '.-.', 's': '...', 't': '-',
+            'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-', 'y': '-.--',
+            'z': '--..', ' ': '/'
+        };
+
+        // 等待函数
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function sendMorse() {
+            const inputText = document.getElementById("textInput").value.toLowerCase();
+            let morseCode = "";
+            
+            // 转换为摩斯电码
+            for (let char of inputText) {
+                if (morseMap[char]) {
+                    morseCode += morseMap[char] + " ";
+                }
+            }
+            
+            // 控制LED闪烁
+            for (let symbol of morseCode) {
+                if (symbol === '.') {
+                    await callControlAPI('on');
+                    await sleep(200);  // 短亮200ms
+                    await callControlAPI('off');
+                } else if (symbol === '-') {
+                    await callControlAPI('on');
+                    await sleep(600);  // 长亮600ms
+                    await callControlAPI('off');
+                } else if (symbol === ' ') {
+                    await sleep(800);  // 字符间停顿
+                }
+                await sleep(200);  // 符号间间隔
+            }
+            alert("摩斯电码发送完成！");
+        }
+
+        async function callControlAPI(state) {
+            try {
+                // 调用我们创建的Vercel函数
+                const response = await fetch(`/api/control?state=${state}`);
+                if (!response.ok) {
+                    throw new Error('控制命令发送失败');
+                }
+            } catch (error) {
+                console.error('错误:', error);
+                alert(`错误: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
